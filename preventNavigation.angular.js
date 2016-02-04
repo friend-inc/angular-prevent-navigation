@@ -13,11 +13,12 @@ angular.module('preventNavigation', [])
         }
 
         return {
-            permit: function(check_cb) {
+            permit: function(check_cb, text) {
+                if(!text) text = "Page has unsaved data";
                 clear();
                 if(check_cb && check_cb instanceof Function) {
                     obu = window.onbeforeunload;
-                    window.onbeforeunload=function() { try{ obu && obu() } catch(e) {console.error(e)}; check_cb(function(){}); return "Page has unsaved data";}
+                    window.onbeforeunload = onbeforeunload;
 
                     unbind_cb = $rootScope.$on('$locationChangeStart', function(event, to_url) {
                         event.preventDefault();
@@ -30,8 +31,40 @@ angular.module('preventNavigation', [])
                         });
                     });
                 } else if(!check_cb) {
+                    obu = window.onbeforeunload;
+                    window.onbeforeunload = onbeforeunload;
                     unbind_cb = $rootScope.$on('$locationChangeStart', function(event, to_url) { event.preventDefault()});
+                }
+
+                function onbeforeunload() {
+                    try {
+                        obu && obu()
+                    }
+                    catch(e) {
+                        console.error(e)
+                    }
+                    check_cb instanceof Function && check_cb(function(){});
+                    return text;
                 }
             }
         }
-    });
+    })
+    .directive('ngPreventNavigation', function($preventNavigation) {
+        return {
+            restrict: "A",
+            link: function (scope, element, attr) {
+
+                console.log('ng-prevent-navigation', scope, element, attr);
+
+                scope.$watch(attr.ngPreventNavigation, function(result) {
+                    console.log('permit', !result);
+                    $preventNavigation.permit(!result, attr.ngPreventNavigationText);
+                });
+
+                scope.$on('$destroy', function() {
+                    $preventNavigation.permit(true);
+                })
+            }
+        }
+    })
+;
