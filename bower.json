@@ -1,0 +1,18 @@
+{
+  "name": "angular-prevent-navigation",
+  "homepage": "https://github.com/friend-inc/angular-prevent-navigation",
+  "authors": [
+    "Oleg Sergienko <okneigres@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
