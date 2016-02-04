@@ -53,9 +53,6 @@ angular.module('preventNavigation', [])
         return {
             restrict: "A",
             link: function (scope, element, attr) {
-
-                console.log('ng-prevent-navigation', scope, element, attr);
-
                 scope.$watch(attr.ngPreventNavigation, function(result) {
                     console.log('permit', !result);
                     $preventNavigation.permit(!result, attr.ngPreventNavigationText);
